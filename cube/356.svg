@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 31 31" width="224" height="224">
+  <defs>
+    <linearGradient id="silverGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f7f8fa" />
+      <stop offset="45%" stop-color="#d5d9de" />
+      <stop offset="100%" stop-color="#9ba3ab" />
+    </linearGradient>
+  </defs>
+  <style>
+    svg {
+      --white:  #FFFFFF;
+      --red:    #C41E3A;
+      --blue:   #0051BA;
+      --yellow: #FFD500;
+      --orange: #FF5800;
+      --green:  #009E60;
+      --gray:   #CCCCCC;
+      --gan-blue: #0075cf;
+    }
+    .white  { fill: var(--white); }
+    .red    { fill: var(--red); }
+    .blue   { fill: var(--blue); }
+    .yellow { fill: var(--yellow); }
+    .orange { fill: var(--orange); }
+    .green  { fill: var(--green); }
+    .gray   { fill: var(--gray); }
+    .frame  { fill: url(#silverGradient); }
+  </style>
+  <rect width="31" height="31" rx="2.5" ry="2.5" class="frame"/>
+  <rect x="1"  y="1"  width="9" height="9" rx="1.5" ry="1.5" class="red"/>
+  <rect x="11" y="1"  width="9" height="9" rx="1.5" ry="1.5" class="orange"/>
+  <rect x="21" y="1"  width="9" height="9" rx="1.5" ry="1.5" class="yellow"/>
+  <rect x="1"  y="11" width="9" height="9" rx="1.5" ry="1.5" class="orange"/>
+  <rect x="11" y="11" width="9" height="9" rx="1.5" ry="1.5" class="white"/>
+  <svg x="12" y="12" width="7" height="7" viewBox="0 0 900 1024" preserveAspectRatio="xMidYMid meet">
+    <path fill="var(--gan-blue)" d="M 450 0 L 870 244 L 760 309 L 450 130 L 254 244 L 450 357 L 506 325 L 366 244 L 450 195 L 702 341 L 450 487 L 30 244 Z"/>
+    <path fill="var(--gan-blue)" d="M 0 292 L 422 537 L 422 1024 L 310 960 L 310 830 L 112 715 L 112 845 L 0 780 Z M 112 488 L 112 585 L 310 700 L 310 602 Z"/>
+    <path fill="var(--gan-blue)" d="M 900 292 L 900 780 L 844 812 L 590 666 L 590 960 L 478 1024 L 478 537 L 562 488 L 787 617 L 787 358 Z"/>
+  </svg>
+  <rect x="21" y="11" width="9" height="9" rx="1.5" ry="1.5" class="green"/>
+  <rect x="1"  y="21" width="9" height="9" rx="1.5" ry="1.5" class="yellow"/>
+  <rect x="11" y="21" width="9" height="9" rx="1.5" ry="1.5" class="green"/>
+  <rect x="21" y="21" width="9" height="9" rx="1.5" ry="1.5" class="blue"/>
+</svg>
