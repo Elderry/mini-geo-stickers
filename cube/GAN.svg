@@ -1,55 +1,55 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1024" width="1024" height="1024">
   <style>
-  .logo-fill { fill: #0075cf; }
-</style>
+    :root { --gan-blue: #0075cf; }
+  </style>
+
   <!-- Path 1: Top shape, letter G -->
-  <path class="logo-fill"
+  <path fill="var(--gan-blue)"
     d="
-  M 450 0
-  L 870 244
-  L 760 309
-  L 450 130
-  L 254 244
-  L 450 357
-  L 506 325
-  L 366 244
-  L 450 195
-  L 702 341
-  L 450 487
-  L 30 244
-  Z"
-  />
+      M 450 0
+      L 870 244
+      L 760 309
+      L 450 130
+      L 254 244
+      L 450 357
+      L 506 325
+      L 366 244
+      L 450 195
+      L 702 341
+      L 450 487
+      L 30 244
+      Z"/>
+
   <!-- Path 2: Left shape, letter A -->
-  <path class="logo-fill"
+  <path fill="var(--gan-blue)"
     d="
-  M 0 292
-  L 422 537
-  L 422 1024
-  L 310 960
-  L 310 830
-  L 112 715
-  L 112 845
-  L 0 780
-  Z
-  M 112 488
-  L 112 585
-  L 310 700
-  L 310 602
-  Z"
-  />
+      M 0 292
+      L 422 537
+      V 1024
+      L 310 960
+      V 830
+      L 112 715
+      V 845
+      L 0 780
+      Z
+      M 112 488
+      V 585
+      L 310 700
+      V 602
+      Z"/>
+
   <!-- Path 3: Right shape, letter N -->
-  <path class="logo-fill"
+  <path fill="var(--gan-blue)"
     d="
-  M 900 292
-  L 900 780
-  L 844 812
-  L 590 666
-  L 590 960
-  L 478 1024
-  L 478 537
-  L 562 488
-  L 787 617
-  L 787 358
-  Z"
-  />
+      M 900 292
+      V 780
+      L 844 812
+        590 666
+      V 960
+      L 478 1024
+      V 537
+      L 562 488
+        787 617
+      V 358
+      Z"/>
 </svg>
