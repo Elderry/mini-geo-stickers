@@ -1,0 +1,16 @@
+<?xml-stylesheet href="../common/color-schema.css" type="text/css"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 21" width="204" height="204">
+  <defs>
+    <linearGradient id="silverGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f7f8fa" />
+      <stop offset="45%" stop-color="#d5d9de" />
+      <stop offset="100%" stop-color="#9ba3ab" />
+    </linearGradient>
+  </defs>
+  <rect width="21" height="21" rx="2.5" ry="2.5" fill="url(#silverGradient)"/>
+  <rect x="1"  y="1"  width="9" height="9" rx="1.5" ry="1.5" fill="var(--orange)"/>
+  <rect x="11" y="1"  width="9" height="9" rx="1.5" ry="1.5" fill="var(--white)"/>
+  <image x="12" y="2" width="7" height="7" href="../logo/GAN.svg" />
+  <rect x="1"  y="11" width="9" height="9" rx="1.5" ry="1.5" fill="var(--yellow)"/>
+  <rect x="11" y="11" width="9" height="9" rx="1.5" ry="1.5" fill="var(--green)"/>
+</svg>

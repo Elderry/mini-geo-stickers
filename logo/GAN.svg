@@ -1,10 +1,8 @@
+<?xml-stylesheet href="../common/color-schema.css" type="text/css"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1024" width="1024" height="1024">
-  <style>
-    :root { --gan-blue: #0075cf; }
-  </style>
 
   <!-- Path 1: Top shape, letter G -->
-  <path fill="var(--gan-blue)"
+  <path fill="var(--gan-blue, #0075cf)"
     d="
       M 450 0
       L 870 244
@@ -21,7 +19,7 @@
       Z"/>
 
   <!-- Path 2: Left shape, letter A -->
-  <path fill="var(--gan-blue)"
+  <path fill="var(--gan-blue, #0075cf)"
     d="
       M 0 292
       L 422 537
@@ -39,7 +37,7 @@
       Z"/>
 
   <!-- Path 3: Right shape, letter N -->
-  <path fill="var(--gan-blue)"
+  <path fill="var(--gan-blue, #0075cf)"
     d="
       M 900 292
       V 780
