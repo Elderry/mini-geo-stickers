@@ -1,11 +1,8 @@
-:root,
-svg {
+:root {
   --white: #FFFFFF;
   --red: #C41E3A;
   --blue: #0051BA;
   --yellow: #FFD500;
   --orange: #FF5800;
   --green: #009E60;
-  --gray: #CCCCCC;
-  --gan-blue: #0075cf;
 }
