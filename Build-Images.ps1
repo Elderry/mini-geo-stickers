@@ -190,6 +190,22 @@ function Inline-ExternalPaintServers {
     }
 }
 
+function Normalize-ElementAttributes {
+    param([Parameter(Mandatory)][System.Xml.XmlElement]$Element)
+
+    foreach ($attribute in @($Element.Attributes)) {
+        if ($attribute.Name -eq 'd') {
+            $attribute.Value = ([regex]::Replace($attribute.Value, '\s+', ' ')).Trim()
+        }
+    }
+
+    foreach ($child in $Element.ChildNodes) {
+        if ($child.NodeType -eq [System.Xml.XmlNodeType]::Element) {
+            Normalize-ElementAttributes -Element $child
+        }
+    }
+}
+
 function Inline-SvgImages {
     param(
         [Parameter(Mandatory)][System.Xml.XmlDocument]$Document,
@@ -221,6 +237,7 @@ function Inline-SvgImages {
 
         $assetDocument = Read-XmlDocument -Path $assetPath
         $assetSvg = $assetDocument.DocumentElement
+        Normalize-ElementAttributes -Element $assetSvg
         $inlineSvg = $Document.CreateElement('svg', $Document.DocumentElement.NamespaceURI)
 
         foreach ($attribute in @($image.Attributes)) {
