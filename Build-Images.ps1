@@ -1,14 +1,14 @@
 <#
 .SYNOPSIS
-Copies selected source SVG files into the output folder.
+Generates selected SVG files into the output folder.
 
 .DESCRIPTION
 Scans the project for SVG files with <metadata><output>true</output></metadata>
-and copies them into the output folder while preserving their relative paths.
+and writes them into the output folder while preserving their relative paths.
 #>
 
-$SourceRoot = $PSScriptRoot
-$OutputRoot = (Join-Path $PSScriptRoot 'output')
+$SourceFolders = @('cube', 'logo')
+$OutputFolder = 'output'
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
@@ -54,11 +54,87 @@ function Test-OutputEnabled {
     return $false
 }
 
-$sourceRootPath = [System.IO.Path]::GetFullPath($SourceRoot)
-$outputRootPath = [System.IO.Path]::GetFullPath($OutputRoot)
+function Resolve-AssetPath {
+    param(
+        [Parameter(Mandatory)][string]$BasePath,
+        [Parameter(Mandatory)][string]$Href
+    )
+
+    if ([System.Uri]::IsWellFormedUriString($Href, [System.UriKind]::Absolute)) {
+        return $null
+    }
+
+    return [System.IO.Path]::GetFullPath((Join-Path (Split-Path -Parent $BasePath) $Href))
+}
+
+function Get-StylesheetHref {
+    param([Parameter(Mandatory)][System.Xml.XmlProcessingInstruction]$Instruction)
+
+    $match = [regex]::Match($Instruction.Data, 'href\s*=\s*[''\"](?<href>[^''\"]+)[''\"]')
+    if ($match.Success) {
+        return $match.Groups['href'].Value
+    }
+
+    return $null
+}
+
+function Inline-Stylesheets {
+    param(
+        [Parameter(Mandatory)][System.Xml.XmlDocument]$Document,
+        [Parameter(Mandatory)][string]$SourcePath
+    )
+
+    $stylesheetInstructions = @()
+    foreach ($child in $Document.ChildNodes) {
+        if ($child.NodeType -eq [System.Xml.XmlNodeType]::ProcessingInstruction -and $child.Target -eq 'xml-stylesheet') {
+            $stylesheetInstructions += $child
+        }
+    }
+
+    foreach ($instruction in $stylesheetInstructions) {
+        $href = Get-StylesheetHref -Instruction $instruction
+        if ([string]::IsNullOrWhiteSpace($href)) {
+            continue
+        }
+
+        $stylesheetPath = Resolve-AssetPath -BasePath $SourcePath -Href $href
+        if ($null -eq $stylesheetPath -or -not (Test-Path -LiteralPath $stylesheetPath)) {
+            Write-Warning "Stylesheet not found: $href"
+            continue
+        }
+
+        $style = $Document.CreateElement('style', $Document.DocumentElement.NamespaceURI)
+        $style.SetAttribute('type', 'text/css')
+        [void]$style.AppendChild($Document.CreateCDataSection("`n" + (Get-Content -LiteralPath $stylesheetPath -Raw) + "`n"))
+        [void]$Document.DocumentElement.InsertBefore($style, $Document.DocumentElement.FirstChild)
+        [void]$Document.RemoveChild($instruction)
+    }
+}
+
+function Save-XmlDocument {
+    param(
+        [Parameter(Mandatory)][System.Xml.XmlDocument]$Document,
+        [Parameter(Mandatory)][string]$Path
+    )
+
+    $settings = [System.Xml.XmlWriterSettings]::new()
+    $settings.Indent = $true
+    $settings.Encoding = [System.Text.UTF8Encoding]::new($false)
+
+    $writer = [System.Xml.XmlWriter]::Create($Path, $settings)
+    try {
+        $Document.Save($writer)
+    } finally {
+        $writer.Dispose()
+    }
+}
+
+$sourceRootPath = [System.IO.Path]::GetFullPath($PSScriptRoot)
+$outputRootPath = [System.IO.Path]::GetFullPath((Join-Path $sourceRootPath $OutputFolder))
 
 $generated = @()
-$sourceFiles = Get-ChildItem -Path $sourceRootPath -Filter '*.svg' -Recurse -File
+$sourceFolders = $SourceFolders | ForEach-Object { Join-Path $sourceRootPath $_ }
+$sourceFiles = Get-ChildItem -Path $sourceFolders -Filter '*.svg' -Recurse -File
 
 foreach ($sourceFile in $sourceFiles) {
     $document = Read-XmlDocument -Path $sourceFile.FullName
@@ -74,14 +150,15 @@ foreach ($sourceFile in $sourceFiles) {
         [void](New-Item -ItemType Directory -Path $outputDirectory -Force)
     }
 
-    Copy-Item -LiteralPath $sourceFile.FullName -Destination $outputPath -Force
+    Inline-Stylesheets -Document $document -SourcePath $sourceFile.FullName
+    Save-XmlDocument -Document $document -Path $outputPath
     $generated += $outputPath
 }
 
 if ($generated.Count -eq 0) {
     Write-Host 'No SVG files opted in with <metadata><output>true</output></metadata>.'
 } else {
-    Write-Host "Copied $($generated.Count) SVG file(s):"
+    Write-Host "Generated $($generated.Count) SVG file(s):"
     foreach ($path in $generated) {
         Write-Host "  $path"
     }
