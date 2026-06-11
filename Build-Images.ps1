@@ -105,7 +105,7 @@ function Inline-Stylesheets {
 
         $style = $Document.CreateElement('style', $Document.DocumentElement.NamespaceURI)
         $style.SetAttribute('type', 'text/css')
-        [void]$style.AppendChild($Document.CreateCDataSection("`n" + (Get-Content -LiteralPath $stylesheetPath -Raw) + "`n"))
+        $style.InnerText = "`n" + (Get-Content -LiteralPath $stylesheetPath -Raw) + "  "
         [void]$Document.DocumentElement.InsertBefore($style, $Document.DocumentElement.FirstChild)
         [void]$Document.RemoveChild($instruction)
     }
