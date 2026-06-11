@@ -37,6 +37,34 @@ function Get-DirectChildElement {
     return $null
 }
 
+function Get-ElementById {
+    param(
+        [Parameter(Mandatory)][System.Xml.XmlDocument]$Document,
+        [Parameter(Mandatory)][string]$Id
+    )
+
+    foreach ($element in $Document.GetElementsByTagName('*')) {
+        if ($element.HasAttribute('id') -and $element.GetAttribute('id') -eq $Id) {
+            return $element
+        }
+    }
+
+    return $null
+}
+
+function Get-OrCreateDefsElement {
+    param([Parameter(Mandatory)][System.Xml.XmlDocument]$Document)
+
+    $defs = Get-DirectChildElement -Parent $Document.DocumentElement -LocalName 'defs'
+    if ($null -ne $defs) {
+        return $defs
+    }
+
+    $defs = $Document.CreateElement('defs', $Document.DocumentElement.NamespaceURI)
+    [void]$Document.DocumentElement.InsertBefore($defs, $Document.DocumentElement.FirstChild)
+    return $defs
+}
+
 function Test-OutputEnabled {
     param([Parameter(Mandatory)][System.Xml.XmlDocument]$Document)
 
@@ -111,6 +139,57 @@ function Inline-Stylesheets {
     }
 }
 
+function Inline-ExternalPaintServers {
+    param(
+        [Parameter(Mandatory)][System.Xml.XmlDocument]$Document,
+        [Parameter(Mandatory)][string]$SourcePath
+    )
+
+    $urlPattern = 'url\(([''\"]?)(?<href>[^#)''\"]+\.svg)#(?<id>[^)''\"]+)\1\)'
+    $references = [ordered]@{}
+
+    foreach ($element in $Document.GetElementsByTagName('*')) {
+        foreach ($attribute in @($element.Attributes)) {
+            foreach ($match in [regex]::Matches($attribute.Value, $urlPattern)) {
+                $href = $match.Groups['href'].Value
+                $id = $match.Groups['id'].Value
+                $assetPath = Resolve-AssetPath -BasePath $SourcePath -Href $href
+
+                if ($null -eq $assetPath) {
+                    continue
+                }
+
+                $references["$assetPath#$id"] = [pscustomobject]@{
+                    Path = $assetPath
+                    Id = $id
+                }
+                $attribute.Value = $attribute.Value.Replace($match.Value, "url(#$id)")
+            }
+        }
+    }
+
+    foreach ($reference in $references.Values) {
+        if (Get-ElementById -Document $Document -Id $reference.Id) {
+            continue
+        }
+
+        if (-not (Test-Path -LiteralPath $reference.Path)) {
+            Write-Warning "Paint server not found: $($reference.Path)#$($reference.Id)"
+            continue
+        }
+
+        $assetDocument = Read-XmlDocument -Path $reference.Path
+        $assetElement = Get-ElementById -Document $assetDocument -Id $reference.Id
+        if ($null -eq $assetElement) {
+            Write-Warning "Paint server id not found: $($reference.Id)"
+            continue
+        }
+
+        $defs = Get-OrCreateDefsElement -Document $Document
+        [void]$defs.AppendChild($Document.ImportNode($assetElement, $true))
+    }
+}
+
 function Save-XmlDocument {
     param(
         [Parameter(Mandatory)][System.Xml.XmlDocument]$Document,
@@ -150,6 +229,7 @@ foreach ($sourceFile in $sourceFiles) {
         [void](New-Item -ItemType Directory -Path $outputDirectory -Force)
     }
 
+    Inline-ExternalPaintServers -Document $document -SourcePath $sourceFile.FullName
     Inline-Stylesheets -Document $document -SourcePath $sourceFile.FullName
     Save-XmlDocument -Document $document -Path $outputPath
     $generated += $outputPath
