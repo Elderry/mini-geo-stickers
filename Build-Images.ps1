@@ -190,6 +190,63 @@ function Inline-ExternalPaintServers {
     }
 }
 
+function Inline-SvgImages {
+    param(
+        [Parameter(Mandatory)][System.Xml.XmlDocument]$Document,
+        [Parameter(Mandatory)][string]$SourcePath
+    )
+
+    $imageElements = @()
+    foreach ($element in $Document.GetElementsByTagName('*')) {
+        if ($element.LocalName -eq 'image') {
+            $imageElements += $element
+        }
+    }
+
+    foreach ($image in $imageElements) {
+        $href = $image.GetAttribute('href')
+        if ([string]::IsNullOrWhiteSpace($href)) {
+            $href = $image.GetAttribute('href', 'http://www.w3.org/1999/xlink')
+        }
+
+        if ([string]::IsNullOrWhiteSpace($href) -or -not $href.EndsWith('.svg', [System.StringComparison]::OrdinalIgnoreCase)) {
+            continue
+        }
+
+        $assetPath = Resolve-AssetPath -BasePath $SourcePath -Href $href
+        if ($null -eq $assetPath -or -not (Test-Path -LiteralPath $assetPath)) {
+            Write-Warning "SVG image not found: $href"
+            continue
+        }
+
+        $assetDocument = Read-XmlDocument -Path $assetPath
+        $assetSvg = $assetDocument.DocumentElement
+        $inlineSvg = $Document.CreateElement('svg', $Document.DocumentElement.NamespaceURI)
+
+        foreach ($attribute in @($image.Attributes)) {
+            if ($attribute.LocalName -eq 'href') {
+                continue
+            }
+
+            if ([string]::IsNullOrWhiteSpace($attribute.NamespaceURI)) {
+                $inlineSvg.SetAttribute($attribute.Name, $attribute.Value)
+            } else {
+                $inlineSvg.SetAttribute($attribute.LocalName, $attribute.NamespaceURI, $attribute.Value)
+            }
+        }
+
+        if ($assetSvg.HasAttribute('viewBox') -and -not $inlineSvg.HasAttribute('viewBox')) {
+            $inlineSvg.SetAttribute('viewBox', $assetSvg.GetAttribute('viewBox'))
+        }
+
+        foreach ($child in $assetSvg.ChildNodes) {
+            [void]$inlineSvg.AppendChild($Document.ImportNode($child, $true))
+        }
+
+        [void]$image.ParentNode.ReplaceChild($inlineSvg, $image)
+    }
+}
+
 function Save-XmlDocument {
     param(
         [Parameter(Mandatory)][System.Xml.XmlDocument]$Document,
@@ -231,6 +288,7 @@ foreach ($sourceFile in $sourceFiles) {
 
     Inline-ExternalPaintServers -Document $document -SourcePath $sourceFile.FullName
     Inline-Stylesheets -Document $document -SourcePath $sourceFile.FullName
+    Inline-SvgImages -Document $document -SourcePath $sourceFile.FullName
     Save-XmlDocument -Document $document -Path $outputPath
     $generated += $outputPath
 }
