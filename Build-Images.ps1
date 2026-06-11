@@ -17,7 +17,7 @@ function Read-XmlDocument {
     param([Parameter(Mandatory)][string]$Path)
 
     $document = [System.Xml.XmlDocument]::new()
-    $document.PreserveWhitespace = $true
+    $document.PreserveWhitespace = $false
     $document.Load($Path)
     return $document
 }
@@ -133,7 +133,7 @@ function Inline-Stylesheets {
 
         $style = $Document.CreateElement('style', $Document.DocumentElement.NamespaceURI)
         $style.SetAttribute('type', 'text/css')
-        $style.InnerText = "`n" + (Get-Content -LiteralPath $stylesheetPath -Raw) + "  "
+        $style.InnerText = "`n" + (Get-Content -LiteralPath $stylesheetPath -Raw).TrimEnd() + "`n"
         [void]$Document.DocumentElement.InsertBefore($style, $Document.DocumentElement.FirstChild)
         [void]$Document.RemoveChild($instruction)
     }
