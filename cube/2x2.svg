@@ -1,10 +1,18 @@
 <?xml-stylesheet href="./standard-cube-colors.css" type="text/css"?>
 
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 21" width="300" height="300">
+
+  <metadata>
+    <title>2x2 Cube Sticker</title>
+    <output>true</output>
+    <extra-format>PNG</extra-format>
+  </metadata>
+
   <rect width="21" height="21" rx="2.5" ry="2.5" fill="url(../common/common-defs.svg#backgroundSilverGradient)"/>
   <rect x="1" y="1" width="9" height="9" rx="1.5" ry="1.5" fill="var(--orange)"/>
   <rect x="11" y="1" width="9" height="9" rx="1.5" ry="1.5" fill="var(--white)"/>
   <image x="12" y="2" width="7" height="7" href="../logo/GAN.svg" />
   <rect x="1" y="11" width="9" height="9" rx="1.5" ry="1.5" fill="var(--yellow)"/>
   <rect x="11" y="11" width="9" height="9" rx="1.5" ry="1.5" fill="var(--green)"/>
+
 </svg>
