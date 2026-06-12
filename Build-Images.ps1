@@ -1,10 +1,11 @@
 <#
 .SYNOPSIS
-Generates selected SVG files into the output folder.
+Generates selected image files into the output folder.
 
 .DESCRIPTION
 Scans the project for SVG files with <metadata><output>true</output></metadata>
 and writes them into the output folder while preserving their relative paths.
+Files can also request additional formats with <metadata><extra-format>PNG</extra-format></metadata>.
 #>
 
 $SourceFolders = @('cube', 'logo')
@@ -80,6 +81,25 @@ function Test-OutputEnabled {
     }
 
     return $false
+}
+
+function Get-ExtraFormats {
+    param([Parameter(Mandatory)][System.Xml.XmlDocument]$Document)
+
+    $metadata = Get-DirectChildElement -Parent $Document.DocumentElement -LocalName 'metadata'
+    if ($null -eq $metadata) {
+        return @()
+    }
+
+    $formats = [ordered]@{}
+    foreach ($format in $metadata.GetElementsByTagName('extra-format')) {
+        $normalizedFormat = $format.InnerText.Trim().ToUpperInvariant()
+        if (-not [string]::IsNullOrWhiteSpace($normalizedFormat)) {
+            $formats[$normalizedFormat] = $true
+        }
+    }
+
+    return @($formats.Keys)
 }
 
 function Resolve-AssetPath {
@@ -335,6 +355,80 @@ function Save-XmlDocument {
     }
 }
 
+function Resolve-CssVariables {
+    param([Parameter(Mandatory)][System.Xml.XmlDocument]$Document)
+
+    $variables = @{}
+    $elements = @($Document.GetElementsByTagName('*'))
+
+    foreach ($element in $elements) {
+        if ($element.LocalName -ne 'style') {
+            continue
+        }
+
+        foreach ($match in [regex]::Matches($element.InnerText, '--(?<name>[A-Za-z0-9_-]+)\s*:\s*(?<value>[^;]+);')) {
+            $variables[$match.Groups['name'].Value] = $match.Groups['value'].Value.Trim()
+        }
+    }
+
+    if ($variables.Count -eq 0) {
+        return
+    }
+
+    foreach ($element in $elements) {
+        foreach ($attribute in @($element.Attributes)) {
+            $attribute.Value = [regex]::Replace($attribute.Value, 'var\(--(?<name>[A-Za-z0-9_-]+)\)', {
+                param($match)
+
+                $name = $match.Groups['name'].Value
+                if ($variables.ContainsKey($name)) {
+                    return $variables[$name]
+                }
+
+                return $match.Value
+            })
+        }
+
+        if ($element.LocalName -eq 'style') {
+            $element.InnerText = [regex]::Replace($element.InnerText, 'var\(--(?<name>[A-Za-z0-9_-]+)\)', {
+                param($match)
+
+                $name = $match.Groups['name'].Value
+                if ($variables.ContainsKey($name)) {
+                    return $variables[$name]
+                }
+
+                return $match.Value
+            })
+
+            $element.InnerText = [regex]::Replace($element.InnerText, '--[A-Za-z0-9_-]+\s*:\s*[^;]+;\s*', '')
+            $element.InnerText = [regex]::Replace($element.InnerText, ':root\s*\{\s*\}', '')
+
+            $styleText = $element.InnerText.Trim()
+            if ([string]::IsNullOrWhiteSpace($styleText)) {
+                [void]$element.ParentNode.RemoveChild($element)
+            }
+        }
+    }
+}
+
+function Convert-SvgToPng {
+    param(
+        [Parameter(Mandatory)][string]$SvgPath,
+        [Parameter(Mandatory)][string]$PngPath
+    )
+
+    $magickCommand = Get-Command 'magick' -ErrorAction SilentlyContinue
+    if ($null -eq $magickCommand) {
+        throw "ImageMagick 'magick' command is required to generate PNG output."
+    }
+
+    & $magickCommand.Source $SvgPath $PngPath
+    if ($LASTEXITCODE -ne 0) {
+        throw "ImageMagick failed to generate PNG output: $PngPath"
+    }
+}
+
 $sourceRootPath = [System.IO.Path]::GetFullPath($PSScriptRoot)
 $outputRootPath = [System.IO.Path]::GetFullPath((Join-Path $sourceRootPath $OutputFolder))
 
@@ -348,6 +442,8 @@ foreach ($sourceFile in $sourceFiles) {
         continue
     }
 
+    $extraFormats = Get-ExtraFormats -Document $document
+
     $relativePath = [System.IO.Path]::GetRelativePath($sourceRootPath, $sourceFile.FullName)
     $outputPath = Join-Path $outputRootPath $relativePath
     $outputDirectory = Split-Path -Parent $outputPath
@@ -359,15 +455,29 @@ foreach ($sourceFile in $sourceFiles) {
     Inline-ExternalPaintServers -Document $document -SourcePath $sourceFile.FullName
     Inline-Stylesheets -Document $document -SourcePath $sourceFile.FullName
     Inline-SvgImages -Document $document -SourcePath $sourceFile.FullName
+    Resolve-CssVariables -Document $document
     Format-StyleElements -Document $document
     Save-XmlDocument -Document $document -Path $outputPath
     $generated += $outputPath
+
+    foreach ($format in $extraFormats) {
+        switch ($format) {
+            'PNG' {
+                $pngPath = [System.IO.Path]::ChangeExtension($outputPath, '.png')
+                Convert-SvgToPng -SvgPath $outputPath -PngPath $pngPath
+                $generated += $pngPath
+            }
+            default {
+                Write-Warning "Unsupported extra format '$format' in $($sourceFile.FullName)"
+            }
+        }
+    }
 }
 
 if ($generated.Count -eq 0) {
     Write-Host 'No SVG files opted in with <metadata><output>true</output></metadata>.'
 } else {
-    Write-Host "Generated $($generated.Count) SVG file(s):"
+    Write-Host "Generated $($generated.Count) image file(s):"
     foreach ($path in $generated) {
         Write-Host "  $path"
     }
