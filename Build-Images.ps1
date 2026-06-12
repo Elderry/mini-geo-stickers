@@ -206,6 +206,59 @@ function Normalize-ElementAttributes {
     }
 }
 
+function Get-ElementDepth {
+    param([Parameter(Mandatory)][System.Xml.XmlElement]$Element)
+
+    $depth = 0
+    $parent = $Element.ParentNode
+    while ($null -ne $parent -and $parent.NodeType -eq [System.Xml.XmlNodeType]::Element) {
+        $depth++
+        $parent = $parent.ParentNode
+    }
+
+    return $depth
+}
+
+function Format-StyleElement {
+    param([Parameter(Mandatory)][System.Xml.XmlElement]$Style)
+
+    $depth = Get-ElementDepth -Element $Style
+    $contentIndent = ' ' * (($depth + 1) * 2)
+    $closingIndent = ' ' * ($depth * 2)
+    $lines = $Style.InnerText.Trim() -split '\r?\n'
+    $cssDepth = 0
+
+    $formattedLines = foreach ($line in $lines) {
+        if ([string]::IsNullOrWhiteSpace($line)) {
+            ''
+        } else {
+            $cssLine = $line.Trim()
+            if ($cssLine.StartsWith('}')) {
+                $cssDepth = [Math]::Max(0, $cssDepth - 1)
+            }
+
+            $formattedLine = $contentIndent + (' ' * ($cssDepth * 2)) + $cssLine
+            if ($cssLine.EndsWith('{')) {
+                $cssDepth++
+            }
+
+            $formattedLine
+        }
+    }
+
+    $Style.InnerText = "`n" + ($formattedLines -join "`n") + "`n" + $closingIndent
+}
+
+function Format-StyleElements {
+    param([Parameter(Mandatory)][System.Xml.XmlDocument]$Document)
+
+    foreach ($element in $Document.GetElementsByTagName('*')) {
+        if ($element.LocalName -eq 'style') {
+            Format-StyleElement -Style $element
+        }
+    }
+}
+
 function Inline-SvgImages {
     param(
         [Parameter(Mandatory)][System.Xml.XmlDocument]$Document,
@@ -306,6 +359,7 @@ foreach ($sourceFile in $sourceFiles) {
     Inline-ExternalPaintServers -Document $document -SourcePath $sourceFile.FullName
     Inline-Stylesheets -Document $document -SourcePath $sourceFile.FullName
     Inline-SvgImages -Document $document -SourcePath $sourceFile.FullName
+    Format-StyleElements -Document $document
     Save-XmlDocument -Document $document -Path $outputPath
     $generated += $outputPath
 }
