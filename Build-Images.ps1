@@ -102,6 +102,45 @@ function Get-ExtraFormats {
     return @($formats.Keys)
 }
 
+function Get-VariantStyles {
+    param([Parameter(Mandatory)][System.Xml.XmlDocument]$Document)
+
+    $metadata = Get-DirectChildElement -Parent $Document.DocumentElement -LocalName 'metadata'
+    if ($null -eq $metadata) {
+        return @()
+    }
+
+    $variants = [ordered]@{}
+    foreach ($variantStyle in $metadata.GetElementsByTagName('variant-style')) {
+        foreach ($variant in ($variantStyle.InnerText -split ',')) {
+            $normalizedVariant = $variant.Trim()
+            if (-not [string]::IsNullOrWhiteSpace($normalizedVariant)) {
+                $variants[$normalizedVariant] = $true
+            }
+        }
+    }
+
+    return @($variants.Keys)
+}
+
+function Get-VariantOutputPath {
+    param(
+        [Parameter(Mandatory)][string]$Path,
+        [AllowEmptyString()][string]$VariantStyle
+    )
+
+    if ([string]::IsNullOrWhiteSpace($VariantStyle)) {
+        return $Path
+    }
+
+    $directory = Split-Path -Parent $Path
+    $fileName = [System.IO.Path]::GetFileNameWithoutExtension($Path)
+    $extension = [System.IO.Path]::GetExtension($Path)
+    $variantToken = [regex]::Replace($VariantStyle.ToLowerInvariant(), '[^a-z0-9._-]+', '-')
+
+    return Join-Path $directory "$fileName-$variantToken$extension"
+}
+
 function Resolve-AssetPath {
     param(
         [Parameter(Mandatory)][string]$BasePath,
@@ -334,6 +373,62 @@ function Set-SvgCustomProperties {
     }
 }
 
+function Get-ElementClassNames {
+    param([Parameter(Mandatory)][System.Xml.XmlElement]$Element)
+
+    if (-not $Element.HasAttribute('class')) {
+        return @()
+    }
+
+    return @($Element.GetAttribute('class') -split '\s+' | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+}
+
+function Add-ElementClassName {
+    param(
+        [Parameter(Mandatory)][System.Xml.XmlElement]$Element,
+        [Parameter(Mandatory)][string]$ClassName
+    )
+
+    $classNames = @(Get-ElementClassNames -Element $Element)
+    if ($classNames -notcontains $ClassName) {
+        $classNames += $ClassName
+        $Element.SetAttribute('class', ($classNames -join ' '))
+    }
+}
+
+function Remove-ElementClassName {
+    param(
+        [Parameter(Mandatory)][System.Xml.XmlElement]$Element,
+        [Parameter(Mandatory)][string]$ClassName
+    )
+
+    $classNames = @(Get-ElementClassNames -Element $Element | Where-Object { $_ -ne $ClassName })
+    if ($classNames.Count -eq 0) {
+        [void]$Element.RemoveAttribute('class')
+    } else {
+        $Element.SetAttribute('class', ($classNames -join ' '))
+    }
+}
+
+function Test-CssSelectorAppliesToRoot {
+    param(
+        [Parameter(Mandatory)][string]$Selector,
+        [Parameter(Mandatory)][System.Xml.XmlElement]$Root
+    )
+
+    $selector = $Selector.Trim()
+    if ($selector -eq ':root' -or $selector -eq 'svg') {
+        return $true
+    }
+
+    $classMatch = [regex]::Match($selector, '^(?:svg)?\.(?<class>[A-Za-z0-9_-]+)$')
+    if ($classMatch.Success) {
+        return @(Get-ElementClassNames -Element $Root) -contains $classMatch.Groups['class'].Value
+    }
+
+    return $false
+}
+
 function Inline-SvgImages {
     param(
         [Parameter(Mandatory)][System.Xml.XmlDocument]$Document,
@@ -444,8 +539,24 @@ function Resolve-CssVariables {
             continue
         }
 
-        foreach ($match in [regex]::Matches($element.InnerText, '--(?<name>[A-Za-z0-9_-]+)\s*:\s*(?<value>[^;]+);')) {
-            $variables[$match.Groups['name'].Value] = $match.Groups['value'].Value.Trim()
+        foreach ($block in [regex]::Matches($element.InnerText, '(?s)(?<selector>[^{}]+)\{(?<body>[^{}]*)\}')) {
+            $selectors = $block.Groups['selector'].Value -split ','
+            $applies = $false
+
+            foreach ($selector in $selectors) {
+                if (Test-CssSelectorAppliesToRoot -Selector $selector -Root $Document.DocumentElement) {
+                    $applies = $true
+                    break
+                }
+            }
+
+            if (-not $applies) {
+                continue
+            }
+
+            foreach ($property in (Get-CssCustomProperties -Text $block.Groups['body'].Value).GetEnumerator()) {
+                $variables[$property.Key] = $property.Value
+            }
         }
     }
 
@@ -493,7 +604,7 @@ function Resolve-CssVariables {
             })
 
             $element.InnerText = [regex]::Replace($element.InnerText, '--[A-Za-z0-9_-]+\s*:\s*[^;]+;\s*', '')
-            $element.InnerText = [regex]::Replace($element.InnerText, ':root\s*\{\s*\}', '')
+            $element.InnerText = [regex]::Replace($element.InnerText, '(?s)[^{}]+\{\s*\}', '')
 
             $styleText = $element.InnerText.Trim()
             if ([string]::IsNullOrWhiteSpace($styleText)) {
@@ -534,6 +645,10 @@ foreach ($sourceFile in $sourceFiles) {
     }
 
     $extraFormats = Get-ExtraFormats -Document $document
+    $variantStyles = @(Get-VariantStyles -Document $document)
+    if ($variantStyles.Count -eq 0) {
+        $variantStyles = @('')
+    }
 
     $relativePath = [System.IO.Path]::GetRelativePath($sourceRootPath, $sourceFile.FullName)
     $outputPath = Join-Path $outputRootPath $relativePath
@@ -543,23 +658,37 @@ foreach ($sourceFile in $sourceFiles) {
         [void](New-Item -ItemType Directory -Path $outputDirectory -Force)
     }
 
-    Inline-ExternalPaintServers -Document $document -SourcePath $sourceFile.FullName
-    Inline-Stylesheets -Document $document -SourcePath $sourceFile.FullName
-    Inline-SvgImages -Document $document -SourcePath $sourceFile.FullName
-    Resolve-CssVariables -Document $document
-    Format-StyleElements -Document $document
-    Save-XmlDocument -Document $document -Path $outputPath
-    $generated += $outputPath
+    foreach ($variantStyle in $variantStyles) {
+        $outputDocument = [System.Xml.XmlDocument]$document.Clone()
+        $variantOutputPath = Get-VariantOutputPath -Path $outputPath -VariantStyle $variantStyle
 
-    foreach ($format in $extraFormats) {
-        switch ($format) {
-            'PNG' {
-                $pngPath = [System.IO.Path]::ChangeExtension($outputPath, '.png')
-                Convert-SvgToPng -SvgPath $outputPath -PngPath $pngPath
-                $generated += $pngPath
-            }
-            default {
-                Write-Warning "Unsupported extra format '$format' in $($sourceFile.FullName)"
+        if (-not [string]::IsNullOrWhiteSpace($variantStyle)) {
+            Add-ElementClassName -Element $outputDocument.DocumentElement -ClassName $variantStyle
+        }
+
+        Inline-ExternalPaintServers -Document $outputDocument -SourcePath $sourceFile.FullName
+        Inline-Stylesheets -Document $outputDocument -SourcePath $sourceFile.FullName
+        Inline-SvgImages -Document $outputDocument -SourcePath $sourceFile.FullName
+        Resolve-CssVariables -Document $outputDocument
+
+        if (-not [string]::IsNullOrWhiteSpace($variantStyle)) {
+            Remove-ElementClassName -Element $outputDocument.DocumentElement -ClassName $variantStyle
+        }
+
+        Format-StyleElements -Document $outputDocument
+        Save-XmlDocument -Document $outputDocument -Path $variantOutputPath
+        $generated += $variantOutputPath
+
+        foreach ($format in $extraFormats) {
+            switch ($format) {
+                'PNG' {
+                    $pngPath = [System.IO.Path]::ChangeExtension($variantOutputPath, '.png')
+                    Convert-SvgToPng -SvgPath $variantOutputPath -PngPath $pngPath
+                    $generated += $pngPath
+                }
+                default {
+                    Write-Warning "Unsupported extra format '$format' in $($sourceFile.FullName)"
+                }
             }
         }
     }

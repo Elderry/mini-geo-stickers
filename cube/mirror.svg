@@ -6,12 +6,24 @@
     <title>Mirror Cube Sticker</title>
     <output>true</output>
     <extra-format>PNG</extra-format>
+    <variant-style>fuchsia, violet</variant-style>
   </metadata>
+
+  <style>
+    .fuchsia {
+      --mirror-gradient-1: #f1117B;
+      --mirror-gradient-2: #cf1011;
+    }
+    .violet {
+      --mirror-gradient-1: #7c50c1;
+      --mirror-gradient-2: #3450bd;
+    }
+  </style>
 
   <defs>
     <linearGradient id="mirror-gradient" x1="1" y1="1" x2="30" y2="30" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#7c50c1"/>
-      <stop offset="100%" stop-color="#3450bd"/>
+      <stop offset="0%" stop-color="var(--mirror-gradient-1)"/>
+      <stop offset="100%" stop-color="var(--mirror-gradient-2)"/>
     </linearGradient>
   </defs>
 
