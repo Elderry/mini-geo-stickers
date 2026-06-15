@@ -279,6 +279,61 @@ function Format-StyleElements {
     }
 }
 
+function Get-CssCustomProperties {
+    param([AllowEmptyString()][string]$Text)
+
+    $properties = [ordered]@{}
+    if ([string]::IsNullOrWhiteSpace($Text)) {
+        return $properties
+    }
+
+    foreach ($match in [regex]::Matches($Text, '--(?<name>[A-Za-z0-9_-]+)\s*:\s*(?<value>[^;]+);')) {
+        $properties[$match.Groups['name'].Value] = $match.Groups['value'].Value.Trim()
+    }
+
+    return $properties
+}
+
+function Set-SvgCustomProperties {
+    param(
+        [Parameter(Mandatory)][System.Xml.XmlElement]$Svg,
+        [Parameter(Mandatory)][System.Collections.IDictionary]$Properties
+    )
+
+    if ($Properties.Count -eq 0) {
+        return
+    }
+
+    $style = Get-DirectChildElement -Parent $Svg -LocalName 'style'
+    if ($null -eq $style) {
+        $style = $Svg.OwnerDocument.CreateElement('style', $Svg.NamespaceURI)
+        $style.InnerText = ":root {`n}`n"
+        [void]$Svg.InsertBefore($style, $Svg.FirstChild)
+    }
+
+    foreach ($property in $Properties.GetEnumerator()) {
+        $name = [regex]::Escape($property.Key)
+        $value = $property.Value
+        $pattern = "(?<prefix>--$name\s*:\s*)[^;]+;"
+
+        if ([regex]::IsMatch($style.InnerText, $pattern)) {
+            $style.InnerText = [regex]::Replace($style.InnerText, $pattern, {
+                param($match)
+
+                return $match.Groups['prefix'].Value + $value + ';'
+            })
+        } elseif ([regex]::IsMatch($style.InnerText, ':root\s*\{')) {
+            $style.InnerText = [regex]::Replace($style.InnerText, ':root\s*\{', {
+                param($match)
+
+                return $match.Value + "`n  --$($property.Key): $value;"
+            }, 1)
+        } else {
+            $style.InnerText += "`n:root {`n  --$($property.Key): $value;`n}`n"
+        }
+    }
+}
+
 function Inline-SvgImages {
     param(
         [Parameter(Mandatory)][System.Xml.XmlDocument]$Document,
@@ -310,6 +365,8 @@ function Inline-SvgImages {
 
         $assetDocument = Read-XmlDocument -Path $assetPath
         $assetSvg = $assetDocument.DocumentElement
+        $customProperties = Get-CssCustomProperties -Text $image.GetAttribute('style')
+        Set-SvgCustomProperties -Svg $assetSvg -Properties $customProperties
         Normalize-ElementAttributes -Element $assetSvg
         $inlineSvg = $Document.CreateElement('svg', $Document.DocumentElement.NamespaceURI)
 
@@ -355,6 +412,27 @@ function Save-XmlDocument {
     }
 }
 
+function Resolve-CssValue {
+    param(
+        [Parameter(Mandatory)][string]$Value,
+        [Parameter(Mandatory)][hashtable]$Variables,
+        [Parameter(Mandatory)][hashtable]$Seen
+    )
+
+    return [regex]::Replace($Value, 'var\(--(?<name>[A-Za-z0-9_-]+)\)', {
+        param($match)
+
+        $name = $match.Groups['name'].Value
+        if (-not $Variables.ContainsKey($name) -or $Seen.ContainsKey($name)) {
+            return $match.Value
+        }
+
+        $nestedSeen = $Seen.Clone()
+        $nestedSeen[$name] = $true
+        return Resolve-CssValue -Value $Variables[$name] -Variables $Variables -Seen $nestedSeen
+    })
+}
+
 function Resolve-CssVariables {
     param([Parameter(Mandatory)][System.Xml.XmlDocument]$Document)
 
@@ -375,6 +453,12 @@ function Resolve-CssVariables {
         return
     }
 
+    foreach ($name in @($variables.Keys)) {
+        $seen = @{}
+        $seen[$name] = $true
+        $variables[$name] = Resolve-CssValue -Value $variables[$name] -Variables $variables -Seen $seen
+    }
+
     foreach ($element in $elements) {
         foreach ($attribute in @($element.Attributes)) {
             $attribute.Value = [regex]::Replace($attribute.Value, 'var\(--(?<name>[A-Za-z0-9_-]+)\)', {
@@ -387,6 +471,13 @@ function Resolve-CssVariables {
 
                 return $match.Value
             })
+
+            if ($attribute.Name -eq 'style') {
+                $attribute.Value = [regex]::Replace($attribute.Value, '--[A-Za-z0-9_-]+\s*:\s*[^;]+;\s*', '').Trim()
+                if ([string]::IsNullOrWhiteSpace($attribute.Value)) {
+                    [void]$element.Attributes.Remove($attribute)
+                }
+            }
         }
 
         if ($element.LocalName -eq 'style') {
