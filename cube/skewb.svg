@@ -1,42 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="224" height="224">
-  <defs>
-    <linearGradient id="silver-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f7f8fa"/>
-      <stop offset="45%" stop-color="#d5d9de"/>
-      <stop offset="100%" stop-color="#9ba3ab"/>
-    </linearGradient>
-  </defs>
+<?xml-stylesheet href="./standard-cube-colors.css" type="text/css"?>
 
-  <style>
-    svg {
-      --white: #FFFFFF;
-      --red: #C41E3A;
-      --blue: #0051BA;
-      --yellow: #FFD500;
-      --green: #009E60;
-      --gan-blue: #0075cf;
-    }
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="400" height="400">
 
-    .white { fill: var(--white); }
-    .red { fill: var(--red); }
-    .blue { fill: var(--blue); }
-    .yellow { fill: var(--yellow); }
-    .green { fill: var(--green); }
-  </style>
+  <metadata>
+    <title>Skewb Sticker</title>
+    <output>true</output>
+    <extra-format>PNG</extra-format>
+  </metadata>
 
   <!-- Skewb face: 4 corner triangles + center diamond -->
-  <rect width="32" height="32" rx="2" ry="2" fill="url(#silver-gradient)"/>
+  <rect width="32" height="32" rx="2" ry="2" fill="url(../common/common-defs.svg#backgroundSilverGradient)"/>
 
   <!-- colored pieces: rounded corners with radius 2 (fill-only, no stroke) -->
-  <path d="M 3.92,1.92 L 13.04,1.92 Q 15.04,1.92 13.63,3.33 L 3.33,13.63 Q 1.92,15.04 1.92,13.04 L 1.92,3.92 Q 1.92,1.92 3.92,1.92 Z" class="blue"/>
-  <path d="M 28.08,1.92 L 18.96,1.92 Q 16.96,1.92 18.37,3.33 L 28.67,13.63 Q 30.08,15.04 30.08,13.04 L 30.08,3.92 Q 30.08,1.92 28.08,1.92 Z" class="red"/>
-  <path d="M 30.08,18.96 L 30.08,28.08 Q 30.08,30.08 28.08,30.08 L 18.96,30.08 Q 16.96,30.08 18.37,28.67 L 28.67,18.37 Q 30.08,16.96 30.08,18.96 Z" class="yellow"/>
-  <path d="M 3.92,30.08 L 13.04,30.08 Q 15.04,30.08 13.63,28.67 L 3.33,18.37 Q 1.92,16.96 1.92,18.96 L 1.92,28.08 Q 1.92,30.08 3.92,30.08 Z" class="green"/>
-  <path d="M 17.41,5.25 L 26.75,14.59 Q 28.16,16.00 26.75,17.41 L 17.41,26.75 Q 16.00,28.16 14.59,26.75 L 5.25,17.41 Q 3.84,16.00 5.25,14.59 L 14.59,5.25 Q 16.00,3.84 17.41,5.25 Z" class="white"/>
+  <path d="M 3.92,1.92 L 13.04,1.92 Q 15.04,1.92 13.63,3.33 L 3.33,13.63 Q 1.92,15.04 1.92,13.04 L 1.92,3.92 Q 1.92,1.92 3.92,1.92 Z" fill="var(--blue)"/>
+  <path d="M 28.08,1.92 L 18.96,1.92 Q 16.96,1.92 18.37,3.33 L 28.67,13.63 Q 30.08,15.04 30.08,13.04 L 30.08,3.92 Q 30.08,1.92 28.08,1.92 Z" fill="var(--red)"/>
+  <path d="M 30.08,18.96 L 30.08,28.08 Q 30.08,30.08 28.08,30.08 L 18.96,30.08 Q 16.96,30.08 18.37,28.67 L 28.67,18.37 Q 30.08,16.96 30.08,18.96 Z" fill="var(--yellow)"/>
+  <path d="M 3.92,30.08 L 13.04,30.08 Q 15.04,30.08 13.63,28.67 L 3.33,18.37 Q 1.92,16.96 1.92,18.96 L 1.92,28.08 Q 1.92,30.08 3.92,30.08 Z" fill="var(--green)"/>
+  <path d="M 17.41,5.25 L 26.75,14.59 Q 28.16,16.00 26.75,17.41 L 17.41,26.75 Q 16.00,28.16 14.59,26.75 L 5.25,17.41 Q 3.84,16.00 5.25,14.59 L 14.59,5.25 Q 16.00,3.84 17.41,5.25 Z" fill="var(--white)"/>
 
-  <svg x="12" y="12" width="8" height="8" viewBox="0 0 900 1024" preserveAspectRatio="xMidYMid meet">
-    <path fill="var(--gan-blue)" d="M 450 0 L 870 244 L 760 309 L 450 130 L 254 244 L 450 357 L 506 325 L 366 244 L 450 195 L 702 341 L 450 487 L 30 244 Z"/>
-    <path fill="var(--gan-blue)" d="M 0 292 L 422 537 L 422 1024 L 310 960 L 310 830 L 112 715 L 112 845 L 0 780 Z M 112 488 L 112 585 L 310 700 L 310 602 Z"/>
-    <path fill="var(--gan-blue)" d="M 900 292 L 900 780 L 844 812 L 590 666 L 590 960 L 478 1024 L 478 537 L 562 488 L 787 617 L 787 358 Z"/>
-  </svg>
+  <image x="12" y="12" width="8" height="8" href="../logo/GAN.svg" />
 </svg>
