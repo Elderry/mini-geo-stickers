@@ -507,6 +507,15 @@ function Save-XmlDocument {
     }
 }
 
+function Remove-MetadataElement {
+    param([Parameter(Mandatory)][System.Xml.XmlDocument]$Document)
+
+    $metadata = Get-DirectChildElement -Parent $Document.DocumentElement -LocalName 'metadata'
+    if ($null -ne $metadata) {
+        [void]$Document.DocumentElement.RemoveChild($metadata)
+    }
+}
+
 function Resolve-CssValue {
     param(
         [Parameter(Mandatory)][string]$Value,
@@ -675,6 +684,7 @@ foreach ($sourceFile in $sourceFiles) {
             Remove-ElementClassName -Element $outputDocument.DocumentElement -ClassName $variantStyle
         }
 
+        Remove-MetadataElement -Document $outputDocument
         Format-StyleElements -Document $outputDocument
         Save-XmlDocument -Document $outputDocument -Path $variantOutputPath
         $generated += $variantOutputPath
