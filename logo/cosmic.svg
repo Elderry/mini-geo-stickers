@@ -1,18 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
-<svg
-   version="1.1"
-   id="svg350"
-   width="529.33331"
-   height="450.66666"
-   viewBox="0 0 529.33331 450.66666"
-   sodipodi:docname="cosmic logo neutral + gradient mark.svg"
-   inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 529 450" width="529" height="450">
   <defs
      id="defs354">
     <clipPath
@@ -56,36 +42,8 @@
          id="path388" />
     </clipPath>
   </defs>
-  <sodipodi:namedview
-     id="namedview352"
-     pagecolor="#ffffff"
-     bordercolor="#000000"
-     borderopacity="0.25"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     showgrid="false"
-     inkscape:zoom="2.2788462"
-     inkscape:cx="264.60759"
-     inkscape:cy="225.11392"
-     inkscape:window-width="3840"
-     inkscape:window-height="2054"
-     inkscape:window-x="-11"
-     inkscape:window-y="-11"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="g358">
-    <inkscape:page
-       x="0"
-       y="0"
-       id="page356"
-       width="529.33331"
-       height="450.66666" />
-  </sodipodi:namedview>
   <g
      id="g358"
-     inkscape:groupmode="layer"
-     inkscape:label="Page 1"
      transform="matrix(1.3333333,0,0,-1.3333333,0,450.66667)">
     <g
        id="g360">
