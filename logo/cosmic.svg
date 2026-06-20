@@ -1,13 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 529 450" width="529" height="450">
-  <defs
-     id="defs354">
-    <clipPath
-       clipPathUnits="userSpaceOnUse"
-       id="clipPath366">
-      <path
-         d="m 137.679,131.782 c -5.667,0 -10.279,-4.109 -10.279,-9.159 v 0 c 0,-5.051 4.612,-9.159 10.279,-9.159 v 0 h 116.219 c 5.667,0 10.278,4.108 10.278,9.159 v 0 c 0,5.05 -4.611,9.159 -10.278,9.159 v 0 z"
-         id="path364" />
-    </clipPath>
+  <defs>
     <linearGradient
        x1="0"
        y1="0"
@@ -34,13 +26,6 @@
          offset="1"
          id="stop378" />
     </linearGradient>
-    <clipPath
-       clipPathUnits="userSpaceOnUse"
-       id="clipPath390">
-      <path
-         d="M 0,338 H 397 V 0 H 0 Z"
-         id="path388" />
-    </clipPath>
   </defs>
   <g
      id="g358"
