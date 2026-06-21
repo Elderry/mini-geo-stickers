@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 31 31" width="400" height="400">
+  <defs>
+    <linearGradient id="mirror-gradient" x1="1" y1="1" x2="30" y2="30" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#7c50c1" />
+      <stop offset="100%" stop-color="#3450bd" />
+    </linearGradient>
+    <linearGradient id="backgroundSilverGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f7f8fa" />
+      <stop offset="45%" stop-color="#d5d9de" />
+      <stop offset="100%" stop-color="#9ba3ab" />
+    </linearGradient>
+  </defs>
+  <rect width="31" height="31" rx="2.5" ry="2.5" fill="url(#backgroundSilverGradient)" />
+  <rect x="1" y="1" width="6" height="8" rx="1.2" ry="1.2" fill="url(#mirror-gradient)" />
+  <rect x="8" y="1" width="9" height="8" rx="1.2" ry="1.2" fill="url(#mirror-gradient)" />
+  <rect x="18" y="1" width="12" height="8" rx="1.2" ry="1.2" fill="url(#mirror-gradient)" />
+  <rect x="1" y="10" width="6" height="9" rx="1.2" ry="1.2" fill="url(#mirror-gradient)" />
+  <rect x="8" y="10" width="9" height="9" rx="1.2" ry="1.2" fill="url(#mirror-gradient)" />
+  <svg x="9" y="11" width="7" height="7" viewBox="0 0 900 1024">
+    <!-- Path 1: Top shape, letter G -->
+    <path fill="#FFFFFF" d="M 450 0 L 870 244 760 309 450 130 254 244 450 357 506 325 366 244 450 195 702 341 450 487 30 244 Z" />
+    <!-- Path 2: Left shape, letter A -->
+    <path fill="#FFFFFF" d="M 0 292 L 422 537 V 1024 L 310 960 V 830 L 112 715 V 845 L 0 780 Z M 112 488 V 585 L 310 700 V 602 Z" />
+    <!-- Path 3: Right shape, letter N -->
+    <path fill="#FFFFFF" d="M 900 292 V 780 L 844 812 590 666 V 960 L 478 1024 V 537 L 562 488 787 617 V 358 Z" />
+  </svg>
+  <rect x="18" y="10" width="12" height="9" rx="1.2" ry="1.2" fill="url(#mirror-gradient)" />
+  <rect x="1" y="20" width="6" height="10" rx="1.2" ry="1.2" fill="url(#mirror-gradient)" />
+  <rect x="8" y="20" width="9" height="10" rx="1.2" ry="1.2" fill="url(#mirror-gradient)" />
+  <rect x="18" y="20" width="12" height="10" rx="1.2" ry="1.2" fill="url(#mirror-gradient)" />
+</svg>

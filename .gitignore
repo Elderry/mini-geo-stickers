@@ -1,2 +1,4 @@
-# Ignore the output directory
-output/*
+# Ignore generated output except SVG files
+output/**
+!output/**/
+!output/**/*.svg

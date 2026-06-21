@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="400" height="400">
+  <defs>
+    <linearGradient id="backgroundSilverGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f7f8fa" />
+      <stop offset="45%" stop-color="#d5d9de" />
+      <stop offset="100%" stop-color="#9ba3ab" />
+    </linearGradient>
+  </defs>
+  <!-- Skewb face: 4 corner triangles + center diamond -->
+  <rect width="32" height="32" rx="2" ry="2" fill="url(#backgroundSilverGradient)" />
+  <!-- colored pieces: rounded corners with radius 2 (fill-only, no stroke) -->
+  <path d="M 3.92,1.92 L 13.04,1.92 Q 15.04,1.92 13.63,3.33 L 3.33,13.63 Q 1.92,15.04 1.92,13.04 L 1.92,3.92 Q 1.92,1.92 3.92,1.92 Z" fill="#0051BA" />
+  <path d="M 28.08,1.92 L 18.96,1.92 Q 16.96,1.92 18.37,3.33 L 28.67,13.63 Q 30.08,15.04 30.08,13.04 L 30.08,3.92 Q 30.08,1.92 28.08,1.92 Z" fill="#C41E3A" />
+  <path d="M 30.08,18.96 L 30.08,28.08 Q 30.08,30.08 28.08,30.08 L 18.96,30.08 Q 16.96,30.08 18.37,28.67 L 28.67,18.37 Q 30.08,16.96 30.08,18.96 Z" fill="#FFD500" />
+  <path d="M 3.92,30.08 L 13.04,30.08 Q 15.04,30.08 13.63,28.67 L 3.33,18.37 Q 1.92,16.96 1.92,18.96 L 1.92,28.08 Q 1.92,30.08 3.92,30.08 Z" fill="#009E60" />
+  <path d="M 17.41,5.25 L 26.75,14.59 Q 28.16,16.00 26.75,17.41 L 17.41,26.75 Q 16.00,28.16 14.59,26.75 L 5.25,17.41 Q 3.84,16.00 5.25,14.59 L 14.59,5.25 Q 16.00,3.84 17.41,5.25 Z" fill="#FFFFFF" />
+  <svg x="12" y="12" width="8" height="8" viewBox="0 0 900 1024">
+    <!-- Path 1: Top shape, letter G -->
+    <path fill="#0075cf" d="M 450 0 L 870 244 760 309 450 130 254 244 450 357 506 325 366 244 450 195 702 341 450 487 30 244 Z" />
+    <!-- Path 2: Left shape, letter A -->
+    <path fill="#0075cf" d="M 0 292 L 422 537 V 1024 L 310 960 V 830 L 112 715 V 845 L 0 780 Z M 112 488 V 585 L 310 700 V 602 Z" />
+    <!-- Path 3: Right shape, letter N -->
+    <path fill="#0075cf" d="M 900 292 V 780 L 844 812 590 666 V 960 L 478 1024 V 537 L 562 488 787 617 V 358 Z" />
+  </svg>
+</svg>
