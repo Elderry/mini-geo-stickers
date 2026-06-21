@@ -502,6 +502,7 @@ function Save-XmlDocument {
     $writer = [System.Xml.XmlWriter]::Create($Path, $settings)
     try {
         $Document.Save($writer)
+        $writer.WriteWhitespace($settings.NewLineChars)
     } finally {
         $writer.Dispose()
     }
