@@ -66,6 +66,22 @@ The build script also prepares standalone output files by:
 - resolving CSS custom properties like `var(--red)` into concrete values
 - removing source-only metadata from generated SVGs
 
+## Output Gallery
+
+| Title | Preview |
+| --- | --- |
+| [2x2 Cube Sticker](output/cube/2x2.svg) | <img src="output/cube/2x2.svg" alt="2x2 cube sticker" width="96"> |
+| [3x3 Cube Sticker](output/cube/3x3.svg) | <img src="output/cube/3x3.svg" alt="3x3 cube sticker" width="96"> |
+| [4x4 Cube Sticker](output/cube/4x4.svg) | <img src="output/cube/4x4.svg" alt="4x4 cube sticker" width="96"> |
+| [5x5 Cube Sticker](output/cube/5x5.svg) | <img src="output/cube/5x5.svg" alt="5x5 cube sticker" width="96"> |
+| [Megaminx Sticker](output/cube/mega.svg) | <img src="output/cube/mega.svg" alt="Megaminx sticker" width="96"> |
+| [Mirror Cube(Fuchsia) Sticker](output/cube/mirror-fuchsia.svg) | <img src="output/cube/mirror-fuchsia.svg" alt="Fuchsia mirror cube sticker" width="96"> |
+| [Mirror Cube(Violet) Sticker](output/cube/mirror-violet.svg) | <img src="output/cube/mirror-violet.svg" alt="Violet mirror cube sticker" width="96"> |
+| [Pyraminx Sticker](output/cube/pyra.svg) | <img src="output/cube/pyra.svg" alt="Pyraminx sticker" width="96"> |
+| [Skewb Sticker](output/cube/skewb.svg) | <img src="output/cube/skewb.svg" alt="Skewb sticker" width="96"> |
+| [Arch Linux](output/logo/arch-linux.svg) | <img src="output/logo/arch-linux.svg" alt="Arch Linux logo sticker" width="96"> |
+| [Cosmic Desktop](output/logo/cosmic.svg) | <img src="output/logo/cosmic.svg" alt="Cosmic Desktop logo sticker" width="96"> |
+
 ## License
 
 This project is licensed under the MIT License. See `LICENSE` for details.
