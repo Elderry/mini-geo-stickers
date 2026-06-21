@@ -1,35 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600">
   <defs>
-    <linearGradient
-      x1="0"
-      y1="0"
-      x2="1"
-      y2="0"
-      gradientUnits="userSpaceOnUse"
-      gradientTransform="matrix(136.77571,0,0,-136.77571,127.40062,122.62276)"
-      spreadMethod="pad"
-      id="linearGradient380">
-      <stop
-        style="stop-opacity:1;stop-color:#ffae02"
-        offset="0"
-        id="stop372" />
-      <stop
-        style="stop-opacity:1;stop-color:#ff972a"
-        offset="0.527933"
-        id="stop374" />
-      <stop
-        style="stop-opacity:1;stop-color:#fe7e57"
-        offset="0.999999"
-        id="stop376" />
-      <stop
-        style="stop-opacity:1;stop-color:#fe7e57"
-        offset="1"
-        id="stop378" />
+    <linearGradient id="orange-bar-gradient">
+      <stop stop-color="#ffae02" offset="0"/>
+      <stop stop-color="#fe7e57" offset="1"/>
     </linearGradient>
   </defs>
   <path
     d="m 144,392 c -15.16434,0 -27,10.76712 -27,24 C 117,429.23552 128.83566,440 144,440 h 312 c 15.16437,0 27,-10.76448 27,-24 C 483,402.76712 471.16437,392 456,392 Z"
-    fill="url(#linearGradient380)" />
+    fill="url(#orange-bar-gradient)" />
   <path
     d="m 522,250.56346 c 0,47.98317 -18.98664,80.73849 -56,95.43654 -15.55745,6.16291 -34.79233,10 -56,10 h -65 c -13.72387,0 -25,-11.33794 -25,-25 0,-13.6801 11.27402,-27 25,-27 h 42.27815 C 452.38513,304 470,290.14163 470,250.00024 470,200.04335 445.22499,192 404,192 H 196 c -41.86822,0 -66,8.33796 -66,58 0,40.18921 18.50632,54 82.72185,54 H 255 c 13.77458,0 25,13.34063 25,27 0,13.58237 -11.15564,25 -25,25 h -65 c -21.25572,0 -40.49058,-3.83709 -56,-10 C 96.98667,331.30195 78,297.98317 78,250 78,177.65467 118.20738,140 196,140 h 208 c 77.78994,0 118,37.65467 118,110"
     fill="#2e2e2e" />
