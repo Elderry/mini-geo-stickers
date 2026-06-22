@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 125 125" width="600" height="600">
+
+  <metadata>
+    <title>3x3 PLL Algorithm Pattern 1</title>
+    <output>true</output>
+  </metadata>
+
+  <style>
+    :root {
+      --black: #000000;
+      --white: #ffffff;
+    }
+  </style>
+
+  <defs>
+    <rect id="white-square" width="33" height="33" fill="var(--white)"/>
+    <rect id="border-bar" width="31" height="5" fill="var(--black)"/>
+    <rect id="side-border-bar" width="5" height="31" fill="var(--black)"/>
+    <marker id="arrowhead" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 7 3.5 L 0 7 Z" fill="var(--black)"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="125" height="125" fill="var(--white)"/>
+
+  <!-- Grid -->
+  <rect x="7" y="7" width="111" height="111" fill="var(--black)"/>
+
+  <!-- Border bars -->
+  <use href="#border-bar" x="11" y="0"/>
+  <use href="#border-bar" x="47" y="0"/>
+  <use href="#border-bar" x="83" y="0"/>
+  <use href="#side-border-bar" x="0" y="11"/>
+  <use href="#side-border-bar" x="120" y="11"/>
+  <use href="#side-border-bar" x="0" y="83"/>
+  <use href="#side-border-bar" x="120" y="83"/>
+  <use href="#border-bar" x="11" y="120"/>
+  <use href="#border-bar" x="83" y="120"/>
+
+  <!-- White squares -->
+  <use href="#white-square" x="10" y="10"/>
+  <use href="#white-square" x="46" y="10"/>
+  <use href="#white-square" x="82" y="10"/>
+  <use href="#white-square" x="10" y="46"/>
+  <use href="#white-square" x="46" y="46"/>
+  <use href="#white-square" x="82" y="46"/>
+  <use href="#white-square" x="10" y="82"/>
+  <use href="#white-square" x="46" y="82"/>
+  <use href="#white-square" x="82" y="82"/>
+
+  <!-- Arrows -->
+  <g fill="none" stroke="var(--black)" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter">
+    <path d="M 76 62 H 106" marker-end="url(#arrowhead)"/>
+    <path d="M 30 64 L 63 97" marker-end="url(#arrowhead)"/>
+    <path d="M 86 76 L 63 97" marker-end="url(#arrowhead)"/>
+  </g>
+
+</svg>
