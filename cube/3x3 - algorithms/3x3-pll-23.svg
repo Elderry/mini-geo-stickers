@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 125 125" width="600" height="600">
+
+  <metadata>
+    <title>3x3 PLL Algorithm Pattern 23</title>
+    <output>true</output>
+  </metadata>
+
+  <style>
+    :root {
+      --black: #000000;
+      --white: #ffffff;
+    }
+  </style>
+
+  <defs>
+    <rect id="white-square" width="33" height="33" fill="var(--white)"/>
+    <rect id="border-bar" width="31" height="5" fill="var(--black)"/>
+    <rect id="black-square" width="29" height="29" fill="var(--black)"/>
+  </defs>
+
+  <!-- Background -->
+  <rect width="125" height="125" fill="var(--white)"/>
+
+  <!-- Grid -->
+  <rect x="7" y="7" width="111" height="111" fill="var(--black)"/>
+
+  <!-- Border bars -->
+  <use href="#border-bar" x="11" y="0"/>
+  <use href="#border-bar" x="83" y="0"/>
+
+  <!-- White squares -->
+  <use href="#white-square" x="10" y="10"/>
+  <use href="#white-square" x="46" y="10"/>
+  <use href="#white-square" x="82" y="10"/>
+  <use href="#white-square" x="10" y="46"/>
+  <use href="#white-square" x="46" y="46"/>
+  <use href="#white-square" x="82" y="46"/>
+  <use href="#white-square" x="10" y="82"/>
+  <use href="#white-square" x="46" y="82"/>
+  <use href="#white-square" x="82" y="82"/>
+
+  <!-- Black squares -->
+  <use href="#black-square" x="48" y="12"/>
+  <use href="#black-square" x="12" y="48"/>
+  <use href="#black-square" x="48" y="48"/>
+  <use href="#black-square" x="84" y="48"/>
+  <use href="#black-square" x="12" y="84"/>
+  <use href="#black-square" x="48" y="84"/>
+  <use href="#black-square" x="84" y="84"/>
+
+</svg>
