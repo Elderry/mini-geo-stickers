@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 125 125" width="600" height="600">
 
   <metadata>
-    <title>3x3 PLL Algorithm Pattern 22</title>
+    <title>3x3 OLL Algorithm Pattern 25</title>
     <output>true</output>
   </metadata>
 
@@ -26,9 +26,7 @@
   <rect x="7" y="7" width="111" height="111" fill="var(--black)"/>
 
   <!-- Border bars -->
-  <use href="#border-bar" x="83" y="0"/>
   <use href="#side-border-bar" x="0" y="11"/>
-  <use href="#side-border-bar" x="0" y="83"/>
   <use href="#border-bar" x="83" y="120"/>
 
   <!-- White squares -->
@@ -44,9 +42,11 @@
 
   <!-- Black squares -->
   <use href="#black-square" x="48" y="12"/>
+  <use href="#black-square" x="84" y="12"/>
   <use href="#black-square" x="12" y="48"/>
   <use href="#black-square" x="48" y="48"/>
   <use href="#black-square" x="84" y="48"/>
+  <use href="#black-square" x="12" y="84"/>
   <use href="#black-square" x="48" y="84"/>
 
 </svg>
