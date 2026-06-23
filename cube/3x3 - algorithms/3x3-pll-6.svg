@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 125 125" width="600" height="600">
+
+  <metadata>
+    <title>3x3 PLL Algorithm Pattern 6</title>
+    <output>true</output>
+  </metadata>
+
+  <style>
+    :root {
+      --black: #000000;
+      --white: #ffffff;
+    }
+  </style>
+
+  <defs>
+    <rect id="white-square" width="33" height="33" fill="var(--white)"/>
+    <rect id="border-bar" width="31" height="5" fill="var(--black)"/>
+    <rect id="side-border-bar" width="5" height="31" fill="var(--black)"/>
+    <marker id="arrowhead" markerWidth="4" markerHeight="8" refX="2" refY="4" orient="auto-start-reverse">
+      <path d="M 0 0 L 4 4 0 8 Z" fill="var(--black)"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="125" height="125" fill="var(--white)"/>
+
+  <!-- Grid -->
+  <rect x="7" y="7" width="111" height="111" fill="var(--black)"/>
+
+  <!-- Border bars -->
+  <use href="#border-bar" x="11" y="0"/>
+  <use href="#border-bar" x="47" y="0"/>
+  <use href="#side-border-bar" x="0" y="11"/>
+  <use href="#side-border-bar" x="0" y="47"/>
+  <use href="#side-border-bar" x="120" y="47"/>
+  <use href="#border-bar" x="47" y="120"/>
+
+  <!-- White squares -->
+  <use href="#white-square" x="10" y="10"/>
+  <use href="#white-square" x="46" y="10"/>
+  <use href="#white-square" x="82" y="10"/>
+  <use href="#white-square" x="10" y="46"/>
+  <use href="#white-square" x="46" y="46"/>
+  <use href="#white-square" x="82" y="46"/>
+  <use href="#white-square" x="10" y="82"/>
+  <use href="#white-square" x="46" y="82"/>
+  <use href="#white-square" x="82" y="82"/>
+
+  <!-- Arrows -->
+  <g fill="none" stroke="var(--black)" stroke-width="2.5">
+    <path d="M 92 33 L 24 101" marker-end="url(#arrowhead)"/>
+    <path d="M 98 87 V 25" marker-end="url(#arrowhead)"/>
+    <path d="M 36 98 H 100" marker-end="url(#arrowhead)"/>
+  </g>
+
+</svg>
